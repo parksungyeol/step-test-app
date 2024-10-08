@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step Test Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Step Test App</h1>
+        <h3 id="timer">Step Test Timer: 00:00</h3>
+        <button id="startButton">Start Step Test</button>
+        
+        <p>Enter your heart rate after the test:</p>
+        <input type="number" id="heartRateInput" placeholder="Heart Rate (bpm)" />
+        <button id="calculateButton">Calculate VO2max</button>
+        
+        <div class="result">
+            <h3 id="vo2maxResult">VO2max Result: </h3>
+        </div>
+    </div>
+
+    <script>
+        // 타이머 설정
+        let timer;
+        let timeRemaining = 300;  // 5분 = 300초
+        const timerDisplay = document.getElementById('timer');
+        const startButton = document.getElementById('startButton');
+        const calculateButton = document.getElementById('calculateButton');
+
+        // Step Test 시작
+        startButton.addEventListener('click', () => {
+            clearInterval(timer);
+            timeRemaining = 300;
+            updateTimerDisplay();
+
+            // 타이머 시작
+            timer = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    timerDisplay.textContent = "Step Test Complete!";
+                }
+            }, 1000);
+        });
+
+        // 타이머 업데이트 함수
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerDisplay.textContent = `Step Test Timer: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // VO2max 계산
+        calculateButton.addEventListener('click', () => {
+            const heartRateInput = document.getElementById('heartRateInput');
+            const heartRate = parseInt(heartRateInput.value);
+            
+            if (isNaN(heartRate) || heartRate <= 0) {
+                alert("Please enter a valid heart rate.");
+                return;
+            }
+
+            // VO2max 간단 계산
+            const vo2max = 15.3 * (220 - heartRate) / heartRate;
+            document.getElementById('vo2maxResult').textContent = `VO2max Result: ${vo2max.toFixed(2)}`;
+        });
+    </script>
+</body>
+</html>
